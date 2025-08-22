@@ -1,31 +1,22 @@
 // api/proxy.js
 const ecastDestination = "ecast.jackboxgames.com";
-const ecastAws = "ecast-prod-28687133.us-east-1.elb.amazonaws.com";
 
 export default async function handler(req, res) {
   try {
     const url = new URL(req.url, `https://${req.headers.host}`);
 
-    const newHeaders = { ...req.headers };
-    delete newHeaders.host;
-    delete newHeaders.origin;
+    // Заголовки для fetch
+    const headers = { ...req.headers };
+    delete headers.host;
+    delete headers.origin;
 
-    let fetchUrl = '';
+    const fetchUrl = `https://${ecastDestination}${url.pathname}`;
+
     const fetchOptions = {
       method: req.method,
-      headers: newHeaders,
+      headers,
+      body: ['GET', 'HEAD'].includes(req.method) ? undefined : req.body
     };
-
-    if (req.method !== 'GET' && req.method !== 'HEAD') {
-      fetchOptions.body = req.body;
-    }
-
-    if (url.pathname.startsWith("/api")) {
-      fetchUrl = `http://${ecastAws}${url.pathname}`;
-      newHeaders.host = ecastDestination;
-    } else {
-      fetchUrl = `https://${ecastDestination}${url.pathname}`;
-    }
 
     const response = await fetch(fetchUrl, fetchOptions);
 
