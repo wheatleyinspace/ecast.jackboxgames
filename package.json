@@ -4,10 +4,10 @@
   "description": "Proxy for ecast.jackboxgames.com on Vercel",
   "main": "api/proxy.js",
   "scripts": {
-    "start": "vercel dev"
+    "dev": "vercel dev"
   },
   "dependencies": {},
   "engines": {
-    "node": "18.x"
+    "node": "22.x"
   }
 }
