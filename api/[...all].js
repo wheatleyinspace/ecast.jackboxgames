@@ -1,15 +1,15 @@
-// api/proxy.js
 const ecastDestination = "ecast.jackboxgames.com";
 
 export default async function handler(req, res) {
   try {
     const url = new URL(req.url, `https://${req.headers.host}`);
 
-    // Заголовки для fetch
+    // Копируем все заголовки
     const headers = { ...req.headers };
     delete headers.host;
     delete headers.origin;
 
+    // Прокси на ecast с тем же путём
     const fetchUrl = `https://${ecastDestination}${url.pathname}`;
 
     const fetchOptions = {
@@ -20,7 +20,7 @@ export default async function handler(req, res) {
 
     const response = await fetch(fetchUrl, fetchOptions);
 
-    // Копируем заголовки обратно
+    // Копируем заголовки в ответ
     response.headers.forEach((value, key) => {
       res.setHeader(key, value);
     });
